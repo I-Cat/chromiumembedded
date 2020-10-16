@@ -1,4 +1,4 @@
-﻿# This file is an addendum to the Chromium AUTHORS file.
+# This file is an addendum to the Chromium AUTHORS file.
 # Names should be added to this file like so:
 # Name or Organization <email address>
 
