@@ -74,5 +74,5 @@ Index: web_contents_impl.cc
 +  create_params.view = view;
 +  create_params.delegate_view = delegate_view;
    if (params.disposition == NEW_BACKGROUND_TAB)
-     create_params.initially_hidden = true;
+     create_params.initially_hidden = false;
  

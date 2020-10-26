@@ -197,6 +197,7 @@ void CefBrowserMainParts::PostDestroyThreads() {
   delete views::ViewsDelegate::views_delegate;
 #endif //TOOLKIT_VIEWS
 #endif
+#endif
 
   PlatformCleanup();
 }
