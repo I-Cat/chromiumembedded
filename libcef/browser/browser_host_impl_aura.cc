@@ -14,6 +14,7 @@
 
 #include "ui/views/widget/desktop_aura/desktop_native_widget_aura.h"
 #include "base/bind.h"
+#include "base/threading/thread_restrictions.h"
 #include "content/public/browser/native_web_keyboard_event.h"
 #include "content/public/common/file_chooser_params.h"
 #include "content/public/common/renderer_preferences.h"
@@ -24,6 +25,11 @@
 #include "ui/aura/window.h"
 #include "ui/aura/window_event_dispatcher.h"
 #include "ui/ozone/public/cursor_factory_ozone.h"
+
+#include <fcntl.h>    /* For O_RDWR */
+#include <unistd.h>   /* For open(), creat() */
+#include <linux/fb.h>
+#include <sys/ioctl.h>
 
 namespace {
 
@@ -47,9 +53,30 @@ ui::PlatformCursor CefBrowserHostImpl::GetPlatformCursor(
 bool CefBrowserHostImpl::PlatformCreateWindow() {
 
   CHECK(!platform_);
+  /* TODO: Input device enumartion in the DeviceManager fails if we
+   * dont allow IO on this thread.
+   */
+  base::ThreadRestrictions::SetIOAllowed(true);
+
+  struct fb_var_screeninfo fb_var;
+
+  int widht, height;
+
+  int fb_fd =  open("/dev/fb0", O_RDWR);
+  if (ioctl(fb_fd, FBIOGET_VSCREENINFO, &fb_var)) {
+    LOG(WARNING) << "failed to get fb var info ( " << errno << "). Using default 640x480 size";
+    widht = 640;
+    height = 480;
+  }
+  else {
+    widht = fb_var.xres;
+    height = fb_var.yres;
+  }
+  gfx::Size default_window_size(widht, height);
+
+  close(fb_fd);
 
   gfx::Size default_window_size(640, 480);
-
 
   aura::TestScreen* screen = aura::TestScreen::Create(gfx::Size());
 

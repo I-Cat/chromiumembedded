@@ -195,6 +195,7 @@ void CefBrowserMainParts::PostDestroyThreads() {
   aura::Env::DeleteInstance();
 #if defined(TOOLKIT_VIEWS)
   delete views::ViewsDelegate::views_delegate;
+#endif //TOOLKIT_VIEWS
 #endif
 #endif
 
